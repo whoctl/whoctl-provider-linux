@@ -17,22 +17,10 @@ jobs:
           - {goos: linux, goarch: arm64}
     steps:
       - uses: actions/checkout@v4
-        with:
-          path: whoctl-provider-linux
-      # Until whoctl-sdk-go is published, a standalone build cannot resolve it.
-      # These two steps come out when it is tagged and `go mod tidy` has written
-      # a real require.
-      - uses: actions/checkout@v4
-        with:
-          repository: whoctl/whoctl-sdk-go
-          path: whoctl-sdk-go
       - uses: actions/setup-go@v5
         with:
-          go-version-file: whoctl-provider-linux/go.mod
-      - name: workspace
-        run: go work init ./whoctl-provider-linux ./whoctl-sdk-go
+          go-version-file: go.mod
       - name: build
-        working-directory: whoctl-provider-linux
         env:
           GOOS: ${{ matrix.goos }}
           GOARCH: ${{ matrix.goarch }}
@@ -40,13 +28,11 @@ jobs:
           VERSION: ${{ github.ref_name }}
         run: make build
       - name: documentation bundle
-        working-directory: whoctl-provider-linux
         # Published once, not per platform: the pages and the schema are the
         # same whatever the binary was built for.
         if: matrix.goarch == 'amd64'
         run: make docs && mv bundle.json docs-bundle.json
       - name: package and checksum
-        working-directory: whoctl-provider-linux
         run: |
           # The name carries no version: GitHub's releases/latest/download/
           # URL only resolves a fixed asset name, and the tag already says
@@ -59,9 +45,9 @@ jobs:
       - uses: softprops/action-gh-release@v2
         with:
           files: |
-            whoctl-provider-linux/*.tar.gz
-            whoctl-provider-linux/*.tar.gz.sha256
-            whoctl-provider-linux/docs-bundle.json
+            *.tar.gz
+            *.tar.gz.sha256
+            docs-bundle.json
 
   # The site is built centrally, so a release has to tell it there is something
   # new. Without this the site only catches up on its nightly schedule.
