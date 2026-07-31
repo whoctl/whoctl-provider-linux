@@ -1,0 +1,6 @@
+# The main Alpine repositories.
+https://dl-cdn.alpinelinux.org/alpine/v3.24/main
+https://dl-cdn.alpinelinux.org/alpine/v3.24/community
+#@testing https://dl-cdn.alpinelinux.org/alpine/edge/testing
+# A note that is prose and not a repository at all.
+/media/cdrom/apks

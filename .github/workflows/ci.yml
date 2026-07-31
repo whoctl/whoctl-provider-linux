@@ -1,0 +1,80 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+# whoctl-sdk-go is not published yet, so a standalone `go build` here cannot
+# resolve it. The workspace is what a developer uses locally and it is what CI
+# uses until the SDK is tagged — after that, `go mod tidy` writes a real require
+# and the two checkout-and-workspace steps below come out.
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: whoctl-provider-linux
+      - uses: actions/checkout@v4
+        with:
+          repository: whoctl/whoctl-sdk-go
+          path: whoctl-sdk-go
+      - uses: actions/checkout@v4
+        with:
+          repository: whoctl/whoctl
+          path: whoctl
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: whoctl-provider-linux/go.mod
+      - name: workspace
+        run: go work init ./whoctl-provider-linux ./whoctl-sdk-go ./whoctl
+      - name: gofmt
+        working-directory: whoctl-provider-linux
+        run: test -z "$(gofmt -l .)" || { gofmt -l .; exit 1; }
+      - name: vet
+        working-directory: whoctl-provider-linux
+        run: go vet ./...
+      - name: test
+        working-directory: whoctl-provider-linux
+        run: go test ./...
+
+  e2e:
+    runs-on: ubuntu-latest
+    strategy:
+      # Every combination runs even after one fails, so a single broken backend
+      # does not hide the state of the other three.
+      fail-fast: false
+      matrix:
+        include:
+          - {distro: alpine, toolset: shadow}
+          - {distro: alpine, toolset: busybox}
+          - {distro: debian, toolset: shadow}
+          - {distro: fedora, toolset: shadow}
+          - {distro: arch, toolset: shadow}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: whoctl-provider-linux
+      - uses: actions/checkout@v4
+        with:
+          repository: whoctl/whoctl-sdk-go
+          path: whoctl-sdk-go
+      # The container harness lives in the CLI, and this provider borrows it.
+      - uses: actions/checkout@v4
+        with:
+          repository: whoctl/whoctl
+          path: whoctl
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: whoctl-provider-linux/go.mod
+      - name: workspace
+        run: go work init ./whoctl-provider-linux ./whoctl-sdk-go ./whoctl
+      - name: e2e
+        working-directory: whoctl-provider-linux
+        env:
+          DISTRO: ${{ matrix.distro }}
+          TOOLSET: ${{ matrix.toolset }}
+          CONTAINER_ENGINE: docker
+        run: scripts/e2e-run.sh

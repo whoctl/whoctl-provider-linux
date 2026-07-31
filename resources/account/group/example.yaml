@@ -1,0 +1,6 @@
+apiVersion: linux.whoctl.io/v1alpha1
+kind: Group
+metadata:
+  name: developers
+spec:
+  gid: 4000

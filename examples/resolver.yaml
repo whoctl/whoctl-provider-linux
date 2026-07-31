@@ -1,0 +1,35 @@
+# The three resolv.conf kinds. Each directive of the file has exactly one owner:
+# Nameserver owns the `nameserver` lines, SearchDomain the `search` list, and
+# ResolverOption the `options` list. Everything else in the file — comments,
+# blank lines, directives whoctl does not model — is preserved untouched.
+apiVersion: linux.whoctl.io/v1alpha1
+kind: SearchDomain
+metadata:
+  name: lab.internal
+spec:
+  # 1-based position in the search list. Unqualified names are tried against
+  # each domain in order.
+  priority: 1
+---
+apiVersion: linux.whoctl.io/v1alpha1
+kind: SearchDomain
+metadata:
+  name: corp.example
+spec:
+  priority: 2
+---
+apiVersion: linux.whoctl.io/v1alpha1
+kind: ResolverOption
+metadata:
+  # The object name is the option name; the part after the colon is the value,
+  # so this is `options ndots:2`.
+  name: ndots
+spec:
+  value: "2"
+---
+apiVersion: linux.whoctl.io/v1alpha1
+kind: ResolverOption
+metadata:
+  # A flag option carries no value.
+  name: rotate
+spec: {}

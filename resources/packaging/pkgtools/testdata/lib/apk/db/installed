@@ -1,0 +1,29 @@
+C:Q1eVpkasfmklsjdflksjdflkjsdflkjsdf=
+P:musl
+V:1.2.5-r10
+A:x86_64
+S:409600
+I:643072
+T:the musl c library (libc) implementation
+U:https://musl.libc.org/
+L:MIT
+o:musl
+m:Natanael Copa <ncopa@alpinelinux.org>
+
+C:Q1oiwerjlksjdflkjsdflkjsdflkjsdflkj=
+P:curl
+V:8.21.0-r0
+A:x86_64
+S:112640
+T:URL retrieval utility and library
+U:https://curl.se/
+L:curl
+o:curl
+D:so:libc.musl-x86_64.so.1
+
+C:Q1zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz=
+P:tree
+V:2.3.2-r0
+A:x86_64
+T:A recursive directory listing command
+o:tree

@@ -1,0 +1,30 @@
+Package: bash
+Status: install ok installed
+Priority: required
+Section: shells
+Installed-Size: 6470
+Architecture: amd64
+Version: 5.2.37-2+b9
+Description: GNU Bourne Again SHell
+ Bash is an sh-compatible command language interpreter that executes
+ commands read from the standard input or from a file.
+ Version: 9.9.9-not-a-field
+Homepage: http://tiswww.case.edu/php/chet/bash/bashtop.html
+
+Package: tree
+Status: install ok installed
+Section: utils
+Architecture: amd64
+Version: 2.2.1-1
+Description: displays an indented directory tree, in color
+
+Package: neverinstalled
+Status: deinstall ok config-files
+Architecture: amd64
+Version: 1.0-1
+Description: a package whose files are gone but whose config remains
+
+Package: purged
+Status: purge ok not-installed
+Architecture: all
+Description: known to dpkg and not present

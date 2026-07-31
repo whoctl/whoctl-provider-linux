@@ -1,0 +1,9 @@
+apiVersion: linux.whoctl.io/v1alpha1
+kind: Nameserver
+metadata:
+  # The object name is the resolver address itself.
+  name: 1.1.1.1
+spec:
+  # 1-based position in /etc/resolv.conf. Resolvers are tried in order, and the
+  # C library only consults the first three. Omit it to append at the end.
+  priority: 1

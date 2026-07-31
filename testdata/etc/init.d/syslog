@@ -1,0 +1,2 @@
+#!/sbin/openrc-run
+description='System logger'

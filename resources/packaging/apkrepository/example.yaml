@@ -1,0 +1,16 @@
+# One repository kind per package manager, because the four disagree about what
+# a repository even is: apk has a bare URL, apt has a suite and components, dnf
+# has an id with a dozen optional keys, pacman has a section with servers. The
+# other three are in repositories-other-distros.yaml, which documents their
+# shape without pretending one file could be applied to every machine.
+apiVersion: linux.whoctl.io/v1alpha1
+kind: ApkRepository
+metadata:
+  # The object name is the URL itself — an apk repository has no other identity.
+  name: https://dl-cdn.alpinelinux.org/alpine/edge/testing
+spec:
+  # Parked rather than removed: a disabled repository is commented out, so the
+  # URL is still there to turn back on.
+  enabled: false
+  # Makes the repository addressable as `apk add package@testing`.
+  tag: testing

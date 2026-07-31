@@ -1,0 +1,10 @@
+apiVersion: linux.whoctl.io/v1alpha1
+kind: Service
+metadata:
+  name: crond
+spec:
+  # Start at boot.
+  enabled: true
+  # And right now: "running" or "stopped". Omit either field to leave that
+  # aspect as it is.
+  state: running

@@ -1,0 +1,8 @@
+root:x:0:
+bin:x:1:daemon
+daemon:x:2:
+wheel:x:10:alice,bob
+nobody:x:65534:
+alice:x:1000:
+bob:x:1001:
+developers:x:1500:alice

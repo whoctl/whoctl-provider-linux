@@ -1,0 +1,13 @@
+[fedora]
+name=Fedora $releasever - $basearch
+metalink=https://mirrors.fedoraproject.org/metalink?repo=fedora-$releasever
+enabled=1
+countme=1
+gpgcheck=1
+skip_if_unavailable=False
+
+[fedora-debuginfo]
+name=Fedora $releasever - $basearch - Debug
+metalink=https://mirrors.fedoraproject.org/metalink?repo=fedora-debug-$releasever
+enabled=0
+gpgcheck=1

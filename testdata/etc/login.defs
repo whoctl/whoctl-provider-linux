@@ -1,0 +1,6 @@
+# Trimmed down copy of a real login.defs, enough to exercise the parser.
+UID_MIN                  1000
+UID_MAX                 60000
+GID_MIN                  1000
+GID_MAX                 60000
+CREATE_HOME             yes

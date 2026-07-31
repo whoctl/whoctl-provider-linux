@@ -1,0 +1,32 @@
+# A single manifest can hold several objects, applied top to bottom. Groups
+# come first here because the users below reference them.
+apiVersion: linux.whoctl.io/v1alpha1
+kind: Group
+metadata:
+  name: platform
+spec:
+  gid: 4100
+---
+apiVersion: linux.whoctl.io/v1alpha1
+kind: User
+metadata:
+  name: bob
+spec:
+  uid: 4201
+  primaryGroup: platform
+  shell: /bin/sh
+  comment: Bob Robertson
+---
+apiVersion: linux.whoctl.io/v1alpha1
+kind: User
+metadata:
+  name: carol
+spec:
+  uid: 4202
+  primaryGroup: platform
+  groups:
+    - developers
+  shell: /bin/sh
+  comment: Carol Danvers
+  # A service account that should never be able to log in.
+  locked: true

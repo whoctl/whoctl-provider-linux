@@ -1,0 +1,25 @@
+# Packages are per manager, not portable. There is no single Package kind
+# because the same software is `openssh-server` under apt and `openssh` under
+# apk, and the four version grammars do not travel either. Naming the manager in
+# the kind is what stops this file from being applied to the wrong machine.
+#
+# This one is for Alpine, which is what `make shell` gives you. Under Debian the
+# same two packages would be AptPackage, with Debian version strings; under
+# Fedora, DnfPackage; under Arch, PacmanPackage with no version at all.
+apiVersion: linux.whoctl.io/v1alpha1
+kind: ApkPackage
+metadata:
+  name: curl
+spec:
+  # installed (the default) or absent.
+  state: installed
+---
+apiVersion: linux.whoctl.io/v1alpha1
+kind: ApkPackage
+metadata:
+  name: tree
+spec:
+  # Omitting the version installs the newest available and then leaves the
+  # package alone, so apply does not turn into an upgrade every time it runs.
+  # Pin one — `version: 2.3.2-r0` — to hold it exactly there.
+  state: installed
