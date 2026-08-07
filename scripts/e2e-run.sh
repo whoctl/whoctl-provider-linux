@@ -1,10 +1,13 @@
 #!/bin/sh
 # Runs this provider's end-to-end suite for one distro.
 #
-# The container harness is whoctl's — running whoctl and some providers on a
-# throwaway machine is its job, and it does not care which distro it is. What
-# stays here is what is this provider's: the assertions, and the fact that a
-# package manager cannot be exercised anywhere but on its own system.
+# The machine it runs on is scripts/sandbox.sh, and everything about how that
+# machine is built lives there. This is the suite and nothing else.
+#
+# Two ways of preparing the same container would be two things to drift, and
+# the shell somebody opens by hand has to be the same one the assertions run
+# against — otherwise reproducing a failure means reproducing the difference
+# first, and the difference is the part nobody knows about.
 #
 # Usage:
 #   scripts/e2e-run.sh                       # alpine, shadow-utils
@@ -12,34 +15,4 @@
 #   TOOLSET=busybox scripts/e2e-run.sh       # alpine only
 set -eu
 
-root=$(cd "$(dirname "$0")/.." && pwd)
-sandbox="${WHOCTL_SANDBOX:-$root/../whoctl/scripts/sandbox.sh}"
-distro="${DISTRO:-alpine}"
-toolset="${TOOLSET:-shadow}"
-
-if [ ! -x "$sandbox" ]; then
-	echo "no sandbox to run in: check out github.com/whoctl/whoctl beside this" >&2
-	echo "repository, or set WHOCTL_SANDBOX to its scripts/sandbox.sh." >&2
-	exit 1
-fi
-
-( cd "$root" && make --no-print-directory build ) >&2
-
-# TOOLSET is this provider's alone: Alpine is the only distro that ships
-# BusyBox's account applets instead of shadow-utils, and both have to be tested.
-packages=""
-if [ "$distro" = alpine ] && [ "$toolset" = busybox ]; then
-	# PACKAGES replaces the harness's list outright, so the four every sandbox
-	# has are spelled again here. What is deliberately missing is `shadow`:
-	# testing BusyBox's account applets means the machine must not have
-	# shadow-utils on it, which is the whole point of this toolset.
-	packages="bash vim jq yq openrc busybox-openrc"
-fi
-
-PROVIDERS=linux \
-SANDBOX_NAME="linux-$distro" \
-PACKAGES="$packages" \
-MOUNTS="-v $root/scripts:/scripts:ro -v $root/bin/examples:/examples:ro" \
-ENV="-e TOOLSET=$toolset" \
-DISTRO="$distro" \
-	exec "$sandbox" /scripts/e2e.sh
+exec "$(cd "$(dirname "$0")" && pwd)/sandbox.sh" /scripts/e2e.sh

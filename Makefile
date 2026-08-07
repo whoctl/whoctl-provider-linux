@@ -63,6 +63,15 @@ test:
 unit:
 	@go test ./...
 
+## sandbox: a shell on a throwaway machine, with this provider ready to use
+#
+# This is the machine the e2e suite runs on, without the suite. It is the only
+# place any mutating verb here may be exercised: useradd and apk write to the
+# machine they run on, and no --root makes that safe.
+.PHONY: sandbox
+sandbox:
+	@scripts/sandbox.sh $(ARGS)
+
 ## e2e: end-to-end tests for one distro (DISTRO=alpine|debian|fedora|arch)
 .PHONY: e2e
 e2e:
