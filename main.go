@@ -25,8 +25,12 @@ func main() {
 	// and the binary is what has it: the pages are embedded here and the field
 	// tables come from this package's own structs, and the site fetches the
 	// result.
-	if len(os.Args) > 1 && os.Args[1] == "--docs-bundle" {
-		if err := docs.WriteBundle(os.Stdout, linux.New(linux.Options{}), version); err != nil {
+	// --docs-generate rewrites the generated regions of the pages in the
+	// checkout. TestConformance fails when they are stale and names a command;
+	// this is that command, and it lives here because a provider must not need
+	// a site builder to keep its own documentation current.
+	if len(os.Args) > 1 {
+		if err := docsCommand(os.Args[1]); err != nil {
 			fmt.Fprintln(os.Stderr, "whoctl-provider-linux:", err)
 			os.Exit(1)
 		}
@@ -44,4 +48,27 @@ func main() {
 		fmt.Fprintln(os.Stderr, "whoctl-provider-linux:", err)
 		os.Exit(1)
 	}
+}
+
+func docsCommand(arg string) error {
+	p := linux.New(linux.Options{})
+	switch arg {
+	case "--docs-bundle":
+		return docs.WriteBundle(os.Stdout, p, version)
+	case "--docs-generate":
+		site, err := docs.Build([]core.Provider{p}, docs.Options{})
+		if err != nil {
+			return err
+		}
+		written, err := docs.Generate(site, ".")
+		if err != nil {
+			return err
+		}
+		for _, file := range written {
+			fmt.Fprintln(os.Stderr, "wrote", file)
+		}
+	default:
+		return fmt.Errorf("unknown flag %q: this is a provider binary, and whoctl is what runs it", arg)
+	}
+	return nil
 }

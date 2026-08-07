@@ -68,6 +68,11 @@ unit:
 e2e:
 	@scripts/e2e-run.sh
 
+## docs-generate: refresh the generated tables in each kind's page
+.PHONY: docs-generate
+docs-generate:
+	@go run . --docs-generate
+
 ## docs: write the documentation bundle a release publishes
 .PHONY: docs
 docs:

@@ -16,6 +16,7 @@ import (
 	"github.com/whoctl/whoctl-provider-linux/resources/packaging/dnfrepository"
 	"github.com/whoctl/whoctl-provider-linux/resources/packaging/pacmanpackage"
 	"github.com/whoctl/whoctl-provider-linux/resources/packaging/pacmanrepository"
+	"github.com/whoctl/whoctl-provider-linux/resources/process"
 	"github.com/whoctl/whoctl-provider-linux/resources/resolver/nameserver"
 	"github.com/whoctl/whoctl-provider-linux/resources/resolver/resolveroption"
 	"github.com/whoctl/whoctl-provider-linux/resources/resolver/searchdomain"
@@ -49,6 +50,7 @@ var pageLayout = map[string]string{
 	"user":             "account/user/user.md",
 	"group":            "account/group/group.md",
 	"service":          "service/service.md",
+	"process":          "process/process.md",
 	"nameserver":       "resolver/nameserver/nameserver.md",
 	"searchdomain":     "resolver/searchdomain/searchdomain.md",
 	"resolveroption":   "resolver/resolveroption/resolveroption.md",
@@ -71,6 +73,7 @@ func pages() map[string]string {
 		"account/user/user.md":                           user.Page,
 		"account/group/group.md":                         group.Page,
 		"service/service.md":                             service.Page,
+		"process/process.md":                             process.Page,
 		"resolver/nameserver/nameserver.md":              nameserver.Page,
 		"resolver/searchdomain/searchdomain.md":          searchdomain.Page,
 		"resolver/resolveroption/resolveroption.md":      resolveroption.Page,
