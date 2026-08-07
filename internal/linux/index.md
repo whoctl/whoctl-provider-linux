@@ -85,6 +85,42 @@ through `rpm`. Repository files are both read and written by whoctl, because no
 native tool owns them end to end; unmodelled keys and comments survive a
 rewrite, exactly as they do in `/etc/resolv.conf`.
 
+## Serving it
+
+A context is **the machine the whoctl server is running on**. Not a machine it
+connects to — this provider reads `/etc` and shells out to `useradd`, and both
+of those happen where the process is.
+
+```yaml
+- name: machine
+  provider: linux
+  # k9s opens on a pod view. A process is the closest thing this provider has to
+  # something running, and it is read-only in every direction: the shim serves
+  # it, and `delete` on a Process refuses whether it is served as a pod or not.
+  #
+  # What the shim costs is on whoctl's side: a client that finds `pods` assumes
+  # `v1/Pod`, so `/log` and exec mean something they do not.
+  pods: processes.linux.whoctl.io
+```
+
+There is no `env` to set and no `namespaces` to declare: nothing here is
+namespaced, and what this provider reads is not configurable — it is the machine.
+
+### Ten machines are ten servers, today
+
+This is the limitation to know before building on it. A context named `linux`
+serves the box the server is on, so a second one on the same server would be the
+same box twice under two names. Managing ten machines means a whoctl server on
+each, and pointing a client at ten addresses.
+
+A remote mode — the provider reaching another host over ssh, so one server could
+hold ten contexts — is a real design and is not built. It is not a small one
+either: every mutation would have to travel, `--dry-run` and `-v` would have to
+mean the same thing on the far side, and the credential that opens the
+connection becomes something the server holds on behalf of whoever asks. That
+last part is the same problem the server's own authentication has, and it will
+not be solved twice.
+
 ## Requirements
 
 - Writes need root. Reads do not.
