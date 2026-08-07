@@ -29,10 +29,15 @@ fi
 # BusyBox's account applets instead of shadow-utils, and both have to be tested.
 packages=""
 if [ "$distro" = alpine ] && [ "$toolset" = busybox ]; then
-	packages="bash vim jq openrc busybox-openrc"
+	# PACKAGES replaces the harness's list outright, so the four every sandbox
+	# has are spelled again here. What is deliberately missing is `shadow`:
+	# testing BusyBox's account applets means the machine must not have
+	# shadow-utils on it, which is the whole point of this toolset.
+	packages="bash vim jq yq openrc busybox-openrc"
 fi
 
 PROVIDERS=linux \
+SANDBOX_NAME="linux-$distro" \
 PACKAGES="$packages" \
 MOUNTS="-v $root/scripts:/scripts:ro -v $root/bin/examples:/examples:ro" \
 ENV="-e TOOLSET=$toolset" \
