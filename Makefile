@@ -85,6 +85,14 @@ fmt:
 clean:
 	@rm -rf bin
 
+## standalone: build and test without the workspace, the way a consumer does
+#
+# The check lives in whoctl, beside the container harness and for the same
+# reason: it is about how a module is consumed, not about what this one manages.
+.PHONY: standalone
+standalone:
+	@../whoctl/scripts/standalone.sh
+
 ## help: list the available targets
 .PHONY: help
 help:
