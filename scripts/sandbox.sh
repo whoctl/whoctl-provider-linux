@@ -33,7 +33,10 @@ if [ ! -x "$sandbox" ]; then
 	exit 1
 fi
 
-( cd "$root" && make --no-print-directory build ) >&2
+# The examples are staged for this container to mount, and only for that: they
+# are not in the release, because nobody installing a provider wants nine YAML
+# files in ~/.whoctl.
+( cd "$root" && make --no-print-directory build examples ) >&2
 
 # TOOLSET is this provider's alone: Alpine is the only distro that ships
 # BusyBox's account applets instead of shadow-utils, and both have to be tested.

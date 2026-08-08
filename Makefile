@@ -25,12 +25,22 @@ export DISTRO TOOLSET CONTAINER_ENGINE VERSION
 
 .DEFAULT_GOAL := help
 
-## build: build the provider binary, and stage the examples the suite mounts
+## build: build the provider binary
+#
+# The binary and nothing else. It used to stage the examples here too, and the
+# release tars up the whole of bin/ — so every install downloaded nine YAML
+# files nobody reads, sitting beside the binary in ~/.whoctl forever. Staging is
+# the suite's need, so it is the suite's target.
 .PHONY: build
 build:
 	@mkdir -p bin
 	@CGO_ENABLED=0 go build -ldflags "-s -w -X main.version=$(VERSION)" \
 		-o bin/whoctl-provider-linux .
+	@echo "built bin/whoctl-provider-linux ($(VERSION))"
+
+## examples: stage the manifests the e2e suite applies, for it to mount
+.PHONY: examples
+examples:
 	@rm -rf bin/examples && mkdir -p bin/examples
 	@cp examples/*.yaml bin/examples/
 	@# An example belongs to the kind it demonstrates, so it lives beside it.
@@ -38,7 +48,6 @@ build:
 	@find resources -name example.yaml | while read -r e; do \
 		cp "$$e" "bin/examples/$$(dirname "$${e#resources/}" | tr / -).yaml"; \
 	done
-	@echo "built bin/whoctl-provider-linux ($(VERSION))"
 
 ## test: unit tests on the host plus e2e across every distro
 .PHONY: test
