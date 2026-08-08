@@ -24,6 +24,7 @@ import (
 	"github.com/whoctl/whoctl-provider-linux/resources/packaging/dnfrepository"
 	"github.com/whoctl/whoctl-provider-linux/resources/packaging/pacmanpackage"
 	"github.com/whoctl/whoctl-provider-linux/resources/packaging/pacmanrepository"
+	"github.com/whoctl/whoctl-provider-linux/resources/process"
 	"github.com/whoctl/whoctl-provider-linux/resources/resolver/nameserver"
 	"github.com/whoctl/whoctl-provider-linux/resources/resolver/resolveroption"
 	"github.com/whoctl/whoctl-provider-linux/resources/resolver/searchdomain"
@@ -52,6 +53,7 @@ func (p *Provider) Handlers() []core.Handler {
 		user.New(p.Provider),
 		group.New(p.Provider),
 		service.New(p.Provider),
+		process.New(p.Provider),
 		nameserver.New(p.Provider),
 		searchdomain.New(p.Provider),
 		resolveroption.New(p.Provider),

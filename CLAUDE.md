@@ -10,10 +10,15 @@ here. `go test ./...` is safe on the host: it reads `testdata/` and never
 `/etc`. Everything else runs in a container.
 
 ```sh
+make sandbox             # a shell on a throwaway machine, provider ready
 make test                # unit tests + e2e across every distro
 make e2e DISTRO=fedora   # one distro
 make e2e TOOLSET=busybox # alpine without shadow-utils
 ```
+
+`make e2e` is `make sandbox` with the suite as its command — one line in
+`scripts/e2e-run.sh` — so the machine somebody opens by hand to reproduce a
+failure is the machine the failure happened on.
 
 **One distro per package manager**, because a package manager cannot be
 exercised anywhere but on its own system. `TOOLSET` means something only on

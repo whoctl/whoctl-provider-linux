@@ -63,10 +63,24 @@ test:
 unit:
 	@go test ./...
 
+## sandbox: a shell on a throwaway machine, with this provider ready to use
+#
+# This is the machine the e2e suite runs on, without the suite. It is the only
+# place any mutating verb here may be exercised: useradd and apk write to the
+# machine they run on, and no --root makes that safe.
+.PHONY: sandbox
+sandbox:
+	@scripts/sandbox.sh $(ARGS)
+
 ## e2e: end-to-end tests for one distro (DISTRO=alpine|debian|fedora|arch)
 .PHONY: e2e
 e2e:
 	@scripts/e2e-run.sh
+
+## docs-generate: refresh the generated tables in each kind's page
+.PHONY: docs-generate
+docs-generate:
+	@go run . --docs-generate
 
 ## docs: write the documentation bundle a release publishes
 .PHONY: docs
@@ -84,6 +98,14 @@ fmt:
 .PHONY: clean
 clean:
 	@rm -rf bin
+
+## standalone: build and test without the workspace, the way a consumer does
+#
+# The check lives in whoctl, beside the container harness and for the same
+# reason: it is about how a module is consumed, not about what this one manages.
+.PHONY: standalone
+standalone:
+	@../whoctl/scripts/standalone.sh
 
 ## help: list the available targets
 .PHONY: help
